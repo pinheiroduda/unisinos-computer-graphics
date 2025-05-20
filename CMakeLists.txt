@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(CGCCHIB)
+project(unisinos-computer-graphics)
 
 # Define o padrão do C++
 set(CMAKE_CXX_STANDARD 17)
@@ -52,16 +52,9 @@ set(EXERCISES
 
 add_compile_options(-Wno-pragmas)
 
-# Define as bibliotecas para cada sistema operacional
-if(WIN32)
-    set(OPENGL_LIBS opengl32)
-elseif(APPLE)
-    find_library(OpenGL_LIBRARY OpenGL)
-    set(OPENGL_LIBS ${OpenGL_LIBRARY})
-else()
-    find_package(OpenGL REQUIRED)
-    set(OPENGL_LIBS ${OPENGL_gl_LIBRARY})
-endif()
+# Define as bibliotecas
+find_package(OpenGL REQUIRED)
+set(OPENGL_LIBS ${OPENGL_gl_LIBRARY})
 
 # Caminho esperado para a GLAD
 set(GLAD_C_FILE "${CMAKE_SOURCE_DIR}/common/glad.c")
@@ -73,7 +66,15 @@ endif()
 
 # Cria os executáveis
 foreach(EXERCISE ${EXERCISES})
-    add_executable(${EXERCISE} src/${EXERCISE}.cpp ${GLAD_C_FILE})
+    set(SOURCES src/${EXERCISE}.cpp ${GLAD_C_FILE})
+
+    # Se for Suzannes, adiciona LoadSimpleOBJ.cpp também
+    if(EXERCISE STREQUAL "Suzannes")
+        list(APPEND SOURCES module2/vivencial/LoadSimpleOBJ.cpp)
+    endif()
+    
+    add_executable(${EXERCISE} ${SOURCES})
+
     target_include_directories(${EXERCISE} PRIVATE ${CMAKE_SOURCE_DIR}/include/glad ${glm_SOURCE_DIR} ${stb_image_SOURCE_DIR})
     target_link_libraries(${EXERCISE} glfw ${OPENGL_LIBS})
 endforeach()

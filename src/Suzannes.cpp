@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
-#include "/home/eduarda/Documentos/oitavo-semestre/computacao-grafica/unisinos-computer-graphics/module2/vivencial/LoadSimpleOBJ.cpp"
+#include "loadSimpleOBJ.h"
 
 using namespace std;
 
