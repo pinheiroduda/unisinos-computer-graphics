@@ -58,14 +58,14 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 
 bool rotateX=false, rotateY=false, rotateZ=false;
 
-struct Objecto {
+struct Object {
 	GLuint VAO;
 	glm::vec3 position;
 	glm::vec3 scale;
 	glm::vec3 color;
 };
 
-std::vector<Objecto> Objects;
+std::vector<Object> Objects;
 int idSelect = 0;
 
 // Função MAIN
@@ -117,7 +117,7 @@ int main()
 	int numVertices;
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
-	Objecto temp;
+	Object temp;
 	temp.color = glm::vec3(1.0, 0.0, 0.0);
 	temp.VAO = VAO;
 	temp.position = glm::vec3(-0.6, -0.6, 0.0);
@@ -125,7 +125,7 @@ int main()
 	Objects.push_back(temp);
 
 	VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
-	Objecto temp2;
+	Object temp2;
 	temp2.VAO = VAO;
 	temp2.color = glm::vec3(0.0, 0.0, 1.0);
 	temp2.position = glm::vec3(-0.3, -0.3, 0.0);
