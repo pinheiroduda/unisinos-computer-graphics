@@ -116,7 +116,7 @@ int main()
 
 	int numVertices;
 	// Gerando um buffer simples, com a geometria de um triângulo
-	GLuint VAO = loadSimpleOBJ("/home/eduarda/Documentos/oitavo-semestre/computacao-grafica/unisinos-computer-graphics/module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
+	GLuint VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
 	Objecto temp;
 	temp.color = glm::vec3(1.0, 0.0, 0.0);
 	temp.VAO = VAO;
@@ -124,7 +124,7 @@ int main()
 	temp.scale = glm::vec3(0.2, 0.2, 0.2);
 	Objects.push_back(temp);
 
-	VAO = loadSimpleOBJ("/home/eduarda/Documentos/oitavo-semestre/computacao-grafica/unisinos-computer-graphics/module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
+	VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
 	Objecto temp2;
 	temp2.VAO = VAO;
 	temp2.color = glm::vec3(0.0, 0.0, 1.0);
