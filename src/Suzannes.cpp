@@ -235,10 +235,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateY = false;
 		rotateZ = true;
 	}
-	int idAnterior;
+
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
 	{
-		idAnterior = idSelect;
 		idSelect++;
 		if(idSelect > Objects.size() - 1)
 		{
@@ -249,10 +248,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
 	{
-		idSelect = idAnterior;
-		if(idSelect < 0)
+		if (idSelect == 0)
 		{
-			idSelect = 0;
+			idSelect = Objects.size() - 1;  // vai para o último
+		}
+		else
+		{
+			idSelect--;
 		}
 	}
 
