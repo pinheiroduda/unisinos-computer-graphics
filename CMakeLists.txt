@@ -48,6 +48,7 @@ set(EXERCISES
     TriangleTex
     SpherePhong
     Suzannes
+    Cube3D
 )
 
 add_compile_options(-Wno-pragmas)
