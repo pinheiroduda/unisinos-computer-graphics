@@ -58,6 +58,13 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 
 bool rotateX=false, rotateY=false, rotateZ=false;
 
+std::vector<glm::vec3> cubePositions = {
+    glm::vec3(-0.5f, 0.0f, 0.0f),
+    glm::vec3(0.5f, 0.0f, 0.0f)
+};
+
+glm::vec3 scale = glm::vec3(0.5, 0.5, 0.5);
+
 // Função MAIN
 int main()
 {
@@ -65,7 +72,7 @@ int main()
 	glfwInit();
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ola 3D -- Eduarda!", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "3D Cubes", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -123,35 +130,40 @@ int main()
 
 		float angle = (GLfloat)glfwGetTime();
 
-		model = glm::mat4(1); 
-		if (rotateX)
+		for (size_t i = 0; i < cubePositions.size(); ++i) 
 		{
-			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::mat4(1); 
+			model = glm::translate(model, cubePositions[i]);
+			model = glm::scale(model, scale);
+
+			if (rotateX)
+			{
+				model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+				
+			}
+			else if (rotateY)
+			{
+				model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+	
+			}
+			else if (rotateZ)
+			{
+				model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+	
+			}
 			
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			
+			// Chamada de desenho - drawcall
+			// Poligono Preenchido - GL_TRIANGLES
+			glBindVertexArray(VAO);
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			// Chamada de desenho - drawcall
+			// CONTORNO - GL_LINE_LOOP
+			glDrawArrays(GL_POINTS, 0, 18);
+			glBindVertexArray(0);
 		}
-		else if (rotateY)
-		{
-			model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		}
-		else if (rotateZ)
-		{
-			model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-
-		}
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
-		
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-		// Chamada de desenho - drawcall
-		// CONTORNO - GL_LINE_LOOP
-		
-		glDrawArrays(GL_POINTS, 0, 18);
-		glBindVertexArray(0);
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
@@ -191,9 +203,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateY = false;
 		rotateZ = true;
 	}
-
-
-
 }
 
 //Esta função está basntante hardcoded - objetivo é compilar e "buildar" um programa de
