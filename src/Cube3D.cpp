@@ -58,7 +58,7 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 
 bool rotateX=false, rotateY=false, rotateZ=false;
 
-std::vector<glm::vec3> cubePositions = {
+std::vector<glm::vec3> cubesPosition = {
     glm::vec3(-0.5f, 0.0f, 0.0f),
     glm::vec3(0.5f, 0.0f, 0.0f)
 };
@@ -130,10 +130,10 @@ int main()
 
 		float angle = (GLfloat)glfwGetTime();
 
-		for (size_t i = 0; i < cubePositions.size(); ++i) 
+		for (size_t i = 0; i < cubesPosition.size(); ++i) 
 		{
 			model = glm::mat4(1); 
-			model = glm::translate(model, cubePositions[i]);
+			model = glm::translate(model, cubesPosition[i]);
 			model = glm::scale(model, scale);
 
 			if (rotateX)
@@ -202,6 +202,51 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateX = false;
 		rotateY = false;
 		rotateZ = true;
+	}
+
+
+	for (size_t i = 0; i < cubesPosition.size(); ++i) 
+	{
+		if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		{
+			cubesPosition[i] += glm::vec3(0.1, 0.0, 0.0);
+		}
+
+		if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		{
+			cubesPosition[i] += glm::vec3(-0.1, 0.0, 0.0);
+		}
+
+		if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		{
+			cubesPosition[i] += glm::vec3(0.0, 0.0, 0.1);
+		}
+
+		if (key == GLFW_KEY_S && action == GLFW_PRESS)
+		{
+			cubesPosition[i] += glm::vec3(0.0, 0.0, -0.1);
+		}
+
+		if (key == GLFW_KEY_I && action == GLFW_PRESS)
+		{
+			cubesPosition[i] += glm::vec3(0.0, 0.1, 0.0);
+		}
+
+		if (key == GLFW_KEY_J && action == GLFW_PRESS)
+		{
+			cubesPosition[i] += glm::vec3(0.0, -0.1, 0.0);
+		}
+
+		if (key == GLFW_KEY_H && action == GLFW_PRESS)
+		{
+			scale += glm::vec3(0.1, 0.1, 0.1);
+		}
+
+		if (key == GLFW_KEY_G && action == GLFW_PRESS)
+		{
+			scale += glm::vec3(-0.1, -0.1, -0.1);
+		}
+		
 	}
 }
 
