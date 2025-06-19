@@ -25,22 +25,11 @@ FetchContent_Declare(
 # Faz o download e compila as bibliotecas
 FetchContent_MakeAvailable(glfw glm)
 
-# Configura o FetchContent para baixar a stb_image automaticamente
-FetchContent_Declare(
-  stb_image
-  GIT_REPOSITORY https://github.com/nothings/stb.git
-  GIT_TAG master
-)
-
-FetchContent_MakeAvailable(stb_image)
-
 # Adiciona as pastas de cabeçalhos
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/common)
 include_directories(${CMAKE_SOURCE_DIR}/include/glad)
 include_directories(${glm_SOURCE_DIR})
-include_directories(${stb_image_SOURCE_DIR})
-
 
 # Lista de exemplos/exercícios podem ser colocados aqui também
 set(EXERCISES
@@ -49,6 +38,7 @@ set(EXERCISES
     SpherePhong
     Suzannes
     Cube3D
+    SuzanneTexture
 )
 
 add_compile_options(-Wno-pragmas)
@@ -65,6 +55,9 @@ if (NOT EXISTS ${GLAD_C_FILE})
     message(FATAL_ERROR "Arquivo glad.c não encontrado! Baixe a GLAD manualmente em https://glad.dav1d.de/ e coloque glad.h em include/glad/ e glad.c em common/")
 endif()
 
+add_library(stb_image STATIC src/stb_image.cpp)
+target_include_directories(stb_image PUBLIC ${CMAKE_SOURCE_DIR}/include)
+
 # Cria os executáveis
 foreach(EXERCISE ${EXERCISES})
     set(SOURCES src/${EXERCISE}.cpp ${GLAD_C_FILE})
@@ -77,5 +70,5 @@ foreach(EXERCISE ${EXERCISES})
     add_executable(${EXERCISE} ${SOURCES})
 
     target_include_directories(${EXERCISE} PRIVATE ${CMAKE_SOURCE_DIR}/include/glad ${glm_SOURCE_DIR} ${stb_image_SOURCE_DIR})
-    target_link_libraries(${EXERCISE} glfw ${OPENGL_LIBS})
+    target_link_libraries(${EXERCISE} glfw ${OPENGL_LIBS} stb_image)
 endforeach()
