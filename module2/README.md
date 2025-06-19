@@ -1,5 +1,8 @@
 # Projeto de Computação Gráfica
 
+![Resultado do desafio](./desafio-m2-eduarda_pinheiro.gif)
+
+
 ## Instruções para rodar o executável
 
 ```bash
