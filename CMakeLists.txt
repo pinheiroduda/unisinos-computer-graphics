@@ -34,7 +34,6 @@ include_directories(${glm_SOURCE_DIR})
 # Lista de exemplos/exercícios podem ser colocados aqui também
 set(EXERCISES
     Hello3D
-    SpherePhong
     Suzannes
     Cube3D
     SuzanneTexture
