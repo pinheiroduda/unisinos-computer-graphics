@@ -38,6 +38,7 @@ set(EXERCISES
     Suzannes
     Cube3D
     SuzanneTexture
+    SuzannePhong
 )
 
 add_compile_options(-Wno-pragmas)
