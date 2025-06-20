@@ -114,11 +114,14 @@ int main()
 	glm::mat4 model = glm::mat4(1); //matriz identidade;
 	GLint modelLoc = glGetUniformLocation(shader.ID, "model");
 
-    std::cout << "Ka: " << geometry.light.ka[0] << ", " << geometry.light.ka[1] << ", " << geometry.light.ka.b << std::endl;
-    std::cout << "Kd: " << geometry.light.kd[0] << ", " << geometry.light.kd[1] << ", " << geometry.light.kd.b << std::endl;
-    std::cout << "Ks: " << geometry.light.ks[0] << ", " << geometry.light.ks[1] << ", " << geometry.light.ks.b << std::endl;
-    std::cout << "Ns: " << geometry.light.q << std::endl;
-    std::cout << "lightPos: " << lightPos[0] << ", " << lightPos[1] << ", " << lightPos[2] << std::endl;
+    glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+    shader.setMat4("view", value_ptr(view));
+
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+    shader.setMat4("projection", glm::value_ptr(projection));
+
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
     shader.setVec3("ka", geometry.light.ka.r, geometry.light.ka.g, geometry.light.ka.b);
     shader.setVec3("kd", geometry.light.kd.r, geometry.light.kd.g, geometry.light.kd.b);
@@ -126,18 +129,8 @@ int main()
     shader.setVec3("ke", geometry.light.ke.r, geometry.light.ke.g, geometry.light.ke.b);
     shader.setFloat("q", geometry.light.q);
     
-    shader.setVec3("camPos", camPos[0], camPos[1], camPos[2]);
-    shader.setVec3("lightPos", lightPos[0], lightPos[1], lightPos[2]);
-    shader.setVec3("lightColor", lightColor[0], lightColor[1], lightColor[2]);
-
-    glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-    shader.setMat4("view", value_ptr(view));
-
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
-    shader.setMat4("projection", glm::value_ptr(projection));
-
-	model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    shader.setVec3("lightPos", lightPos.x, lightPos.y, lightPos.z);
+    shader.setVec3("lightColor", lightColor.x, lightColor.y, lightColor.z);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -163,6 +156,7 @@ int main()
         model = glm::translate(model, position);
     
         model = glm::scale(model, scale);
+        shader.setVec3("lightColor", lightColor.x, lightColor.y, lightColor.z);
 
         if (rotateX)
         {
@@ -239,16 +233,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         position += glm::vec3(-0.1, 0.0, 0.0);
     }
 
-    if (key == GLFW_KEY_W && action == GLFW_PRESS)
-    {
-        position += glm::vec3(0.0, 0.0, 0.1);
-    }
-
-    if (key == GLFW_KEY_S && action == GLFW_PRESS)
-    {
-        position += glm::vec3(0.0, 0.0, -0.1);
-    }
-
     if (key == GLFW_KEY_I && action == GLFW_PRESS)
     {
         position += glm::vec3(0.0, 0.1, 0.0);
@@ -267,6 +251,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key == GLFW_KEY_G && action == GLFW_PRESS)
     {
         scale += glm::vec3(-0.1, -0.1, -0.1);
+    }
+
+    if (key == GLFW_KEY_R && action == GLFW_PRESS)
+    {
+        lightColor = glm::vec3(1.0f, 0.0f, 0.85f); // rosinha
+    }
+
+    if (key == GLFW_KEY_P && action == GLFW_PRESS)
+    {
+        lightColor = glm::vec3(1.0f, 1.0f, 1.0f); // padrão
     }
 }
 
