@@ -65,7 +65,7 @@ const GLuint WIDTH = 1000, HEIGHT = 1000;
 
 bool rotateX=false, rotateY=false, rotateZ=false;
 
-glm::vec3 position = glm::vec3(0.2, 0.2, 0.2);
+glm::vec3 position = glm::vec3(0.2, 0.1, 0.2);
 glm::vec3 scale = glm::vec3(0.4, 0.4, 0.4);
 
 glm::vec3 camPos(0.0f, 0.0f, 3.0f);
