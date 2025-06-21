@@ -267,24 +267,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
     lastX = xpos;
     lastY = ypos;
 
-    // float sensitivity = 0.04f;
-    // xoffset *= sensitivity;
-    // yoffset *= sensitivity;
-
-    // yaw   += xoffset;
-    // pitch += yoffset;
-
-    // // limita a inclinação da câmera (não deixa girar totalmente)
-    // if (pitch > 89.0f)
-    //     pitch = 89.0f;
-    // if (pitch < -89.0f)
-    //     pitch = -89.0f;
-
-    // glm::vec3 front;
-    // front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    // front.y = sin(glm::radians(pitch));
-    // front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    // cameraFront = glm::normalize(front);
     camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
