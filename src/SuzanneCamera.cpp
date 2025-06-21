@@ -300,26 +300,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateZ = true;
 	}
 
-    if (key == GLFW_KEY_I && action == GLFW_PRESS)
-    {
-        position += glm::vec3(0.0, 0.1, 0.0);
-    }
-
-    if (key == GLFW_KEY_J && action == GLFW_PRESS)
-    {
-        position += glm::vec3(0.0, -0.1, 0.0);
-    }
-
-    if (key == GLFW_KEY_H && action == GLFW_PRESS)
-    {
-        scale += glm::vec3(0.1, 0.1, 0.1);
-    }
-
-    if (key == GLFW_KEY_G && action == GLFW_PRESS)
-    {
-        scale += glm::vec3(-0.1, -0.1, -0.1);
-    }
-
     if (key == GLFW_KEY_R && action == GLFW_PRESS)
     {
         lightColor = glm::vec3(1.0f, 0.0f, 0.85f); // rosinha
