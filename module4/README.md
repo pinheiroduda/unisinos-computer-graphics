@@ -7,7 +7,7 @@
 ```bash
 cmake ..
 make
-./SuzanneTexture
+./SuzannePhong
 ```
 
 
