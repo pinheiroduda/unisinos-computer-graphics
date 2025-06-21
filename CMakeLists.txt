@@ -66,6 +66,10 @@ foreach(EXERCISE ${EXERCISES})
     if(EXERCISE STREQUAL "Suzannes")
         list(APPEND SOURCES module2/vivencial/LoadSimpleOBJ.cpp)
     endif()
+
+    if(EXERCISE STREQUAL "SuzanneCamera")
+        list(APPEND SOURCES include/Camera/camera.cpp)
+    endif()
     
     add_executable(${EXERCISE} ${SOURCES})
 
