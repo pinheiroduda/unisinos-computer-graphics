@@ -27,6 +27,6 @@ Pressione G para diminuir
 
 Pressione X, Y ou Z para rotacionar nos respectivos eixos
 
-## Coloração:
+## Iluminação:
 
 Pressione R para iluminar de rosa e P para redefinir para a iluminação inicial
