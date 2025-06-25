@@ -116,7 +116,7 @@ int main()
 
 	int numVertices;
 	// Gerando um buffer simples, com a geometria de um triângulo
-	GLuint VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
+	GLuint VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne/Suzanne.obj", numVertices);
 	Object temp;
 	temp.color = glm::vec3(1.0, 0.0, 0.0);
 	temp.VAO = VAO;
@@ -124,7 +124,7 @@ int main()
 	temp.scale = glm::vec3(0.2, 0.2, 0.2);
 	Objects.push_back(temp);
 
-	VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne.obj", numVertices);
+	VAO = loadSimpleOBJ("../module2/vivencial/Modelos3D/Suzanne/Suzanne.obj", numVertices);
 	Object temp2;
 	temp2.VAO = VAO;
 	temp2.color = glm::vec3(0.0, 0.0, 1.0);

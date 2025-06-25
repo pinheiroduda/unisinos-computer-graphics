@@ -107,7 +107,7 @@ int main()
 
 
 	Shader shader("../module4/shaders/vertex-shader.glsl", "../module4/shaders/fragment-shader.glsl");
-    Geometry geometry = setupGeometry("../assets/Modelos3D/SuzanneText.obj");
+    Geometry geometry = setupGeometry("../assets/Modelos3D/TexturizedSuzanne/SuzanneText.obj");
 
 	glUseProgram(shader.ID);
 
