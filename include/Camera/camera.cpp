@@ -28,7 +28,7 @@ void Camera::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch) {
-    float sensitivity = 0.05f;
+    float sensitivity = 0.04f;
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
