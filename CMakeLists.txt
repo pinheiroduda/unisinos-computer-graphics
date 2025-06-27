@@ -39,6 +39,7 @@ set(EXERCISES
     SuzanneTexture
     SuzannePhong
     SuzanneCamera
+    UniverseCurves
 )
 
 add_compile_options(-Wno-pragmas)
@@ -67,7 +68,7 @@ foreach(EXERCISE ${EXERCISES})
         list(APPEND SOURCES module2/vivencial/LoadSimpleOBJ.cpp)
     endif()
 
-    if(EXERCISE STREQUAL "SuzanneCamera")
+    if(EXERCISE STREQUAL "SuzanneCamera" OR EXERCISE STREQUAL "UniverseCurves")
         list(APPEND SOURCES include/Camera/camera.cpp)
     endif()
     
