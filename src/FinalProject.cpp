@@ -100,6 +100,8 @@ float lastX = WIDTH / 2.0f;
 float lastY = HEIGHT / 2.0f;
 float fov = 45.0f;  // para zoom no próximo passo
 
+int idSelect = 0;
+
 std::vector<Geometry> sceneObjects;
 
 string filePath = "";
@@ -289,19 +291,60 @@ int main()
         for (size_t i = 0; i < sceneObjects.size(); ++i)
         {
             Geometry& geometry = sceneObjects[i];
-            glm::mat4 model = glm::mat4(1);
+            glm::mat4 model = glm::mat4(1.0f);
 
-            // Rotação global nos eixos X, Y ou Z
-            if (rotateX)
-                model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
-            else if (rotateY)
-                model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-            else if (rotateZ)
-                model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+            if (geometry.name == "sun")
+            {
+                model = glm::translate(model, geometry.position);
 
-            model = glm::rotate(model, glm::radians(1800.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+                  if (rotateX && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+                else if (rotateY && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+                else if (rotateZ && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
 
-            // Parâmetros comuns
+                model = glm::scale(model, geometry.scale);
+            }
+            else if (geometry.name == "earth")
+            {
+                updateTrajectory(geometry, deltaTime);
+                model = glm::translate(model, geometry.position);
+
+                if (rotateX && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+                else if (rotateY && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+                else if (rotateZ && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+
+                model = glm::scale(model, geometry.scale);
+            }
+            else if (geometry.name == "moon")
+            {
+                Geometry& earth = sceneObjects[0];
+
+                updateTrajectory(earth, deltaTime);
+                updateTrajectory(geometry, deltaTime);
+
+                glm::mat4 earthModel = glm::mat4(1.0f);
+                earthModel = glm::translate(earthModel, earth.position);
+
+                glm::mat4 moonModel = glm::mat4(1.0f);
+                moonModel = glm::translate(moonModel, geometry.position);
+
+                if (rotateX && i == idSelect)
+                    moonModel = glm::rotate(moonModel, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+                else if (rotateY && i == idSelect)
+                    moonModel = glm::rotate(moonModel, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+                else if (rotateZ && i == idSelect)
+                    moonModel = glm::rotate(moonModel, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+
+                moonModel = glm::scale(moonModel, geometry.scale);
+
+                model = earthModel * moonModel;
+            }
+
             glm::vec3 lightPosView = glm::vec3(view * glm::vec4(sceneObjects[2].position, 1.0f));
             shader.setVec3("lightPos", lightPosView.x, lightPosView.y, lightPosView.z);
             shader.setVec3("lightColor", lightColor.x, lightColor.y, lightColor.z);
@@ -311,47 +354,12 @@ int main()
             shader.setVec3("ke", geometry.light.ke.r, geometry.light.ke.g, geometry.light.ke.b);
             shader.setFloat("q", geometry.light.q);
 
-            if (geometry.name == "sun")
-            {
-                model = glm::scale(model, geometry.scale);
-            }
-            else if (geometry.name == "earth")
-            {
-                updateTrajectory(geometry, deltaTime);
-                model = glm::translate(model, geometry.position);
-                model = glm::scale(model, geometry.scale);
-            }
-            else if (geometry.name == "moon")
-            {
-                Geometry& earth = sceneObjects[0]; // Terra no índice 0
-
-                glm::mat4 earthModel = glm::mat4(1);
-
-                if (rotateX)
-                    earthModel = glm::rotate(earthModel, angle, glm::vec3(1.0f, 0.0f, 0.0f));
-                else if (rotateY)
-                    earthModel = glm::rotate(earthModel, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-                else if (rotateZ)
-                    earthModel = glm::rotate(earthModel, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-
-                earthModel = glm::rotate(earthModel, glm::radians(1800.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-                updateTrajectory(earth, deltaTime);
-                earthModel = glm::translate(earthModel, earth.position);
-
-                // Atualiza a trajetória RELATIVA da Lua, não absoluta
-                updateTrajectory(geometry, deltaTime);
-                earthModel = glm::translate(earthModel, geometry.position);
-
-                earthModel = glm::scale(earthModel, geometry.scale);
-                model = earthModel;
-            }
-
             shader.setMat4("model", glm::value_ptr(model));
             glBindTexture(GL_TEXTURE_2D, geometry.textureID);
             glBindVertexArray(geometry.VAO);
             glDrawArrays(GL_TRIANGLES, 0, geometry.vertexCount);
         }
+
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
@@ -431,8 +439,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ou solta via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
 
 	if (key == GLFW_KEY_X && action == GLFW_PRESS)
 	{
@@ -454,6 +462,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateY = false;
 		rotateZ = true;
 	}
+
+    if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+	{
+		idSelect++;
+		if(idSelect > sceneObjects.size() - 1)
+		{
+			idSelect = 0;
+		}
+	}
+
+
+	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+	{
+		if (idSelect == 0)
+		{
+			idSelect = sceneObjects.size() - 1;  // vai para o último
+		}
+		else
+		{
+			idSelect--;
+		}
+	}
+
 
     if (key == GLFW_KEY_R && action == GLFW_PRESS)
     {
