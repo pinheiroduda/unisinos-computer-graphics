@@ -72,6 +72,10 @@ foreach(EXERCISE ${EXERCISES})
     if(EXERCISE STREQUAL "SuzanneCamera" OR EXERCISE STREQUAL "UniverseCurves" OR EXERCISE STREQUAL "FinalProject")
         list(APPEND SOURCES include/Camera/camera.cpp)
     endif()
+
+    if(EXERCISE STREQUAL "FinalProject")
+        list(APPEND SOURCES include/Bezier/bezier.cpp)
+    endif()
     
     add_executable(${EXERCISE} ${SOURCES})
 

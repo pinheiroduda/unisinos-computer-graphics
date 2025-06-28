@@ -29,6 +29,7 @@ using namespace std;
 #include "stb_image.h"
 
 #include "Camera/camera.h"
+#include "Bezier/bezier.h"
 
 struct Light {
     glm::vec3 ka;
@@ -145,12 +146,30 @@ void generateControlPointsSet(Geometry& geometry)
         geometry.movementSpeed = 0.5f;
     }
 
-    if(geometry.name == "earth") {
+    else if(geometry.name == "earth") {
         geometry.trajectoryPoints = generateCircleControlPointsSet(50, 3.0f);
         geometry.movementSpeed = 0.2f;
     }
 
+    else if (geometry.name == "satellite") {
+        std::vector<glm::vec3> controlPoints = {
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(2.0f, 3.0f, 0.0f),
+            glm::vec3(-2.0f, 3.0f, 0.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(2.0f, -3.0f, 0.0f),
+            glm::vec3(-2.0f, -3.0f, 0.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f)
+        };
+
+        geometry.trajectoryPoints = generateCubicBezierCurve(controlPoints, 100);
+        std::cout << "Pontos gerados para o satellite: " << geometry.trajectoryPoints.size() << std::endl;
+
+        geometry.movementSpeed = 0.3f;
+    }
+
 }
+
 
 // Função MAIN
 int main()
@@ -205,12 +224,19 @@ int main()
     moon.position = moon.trajectoryPoints[0];
     moon.scale = glm::vec3(0.1f, 0.1f, 0.1f);
 
+    Geometry satellite = setupGeometry("../assets/Modelos3D/Satellite/satellite.obj");
+    std::cout << "Asteroid vertex count: " << satellite.vertexCount << std::endl;
+    satellite.name = "satellite";
+    generateControlPointsSet(satellite);
+    satellite.position = satellite.trajectoryPoints[0];
+    satellite.scale = glm::vec3(0.1f, 0.1f, 0.1f);
+
     Geometry sun = setupGeometry("../assets/Modelos3D/Sun/sun.obj");
     sun.name = "sun";
     sun.position = glm::vec3(0.0, 0.0, 0.0);
     sun.scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    sceneObjects = {earth, moon, sun};
+    sceneObjects = {earth, moon, sun, satellite};
 	glUseProgram(shader.ID);
 
 	glm::mat4 model = glm::mat4(1); //matriz identidade;
@@ -286,7 +312,7 @@ int main()
 
         updateTrajectory(sceneObjects[0], deltaTime); // Atualiza a Terra
         updateTrajectory(sceneObjects[1], deltaTime); // Atualiza a Lua
-
+        updateTrajectory(sceneObjects[3], deltaTime); // Atualiza o satellite
 
         for (size_t i = 0; i < sceneObjects.size(); ++i)
         {
@@ -298,6 +324,19 @@ int main()
                 model = glm::translate(model, geometry.position);
 
                   if (rotateX && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
+                else if (rotateY && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+                else if (rotateZ && i == idSelect)
+                    model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+
+                model = glm::scale(model, geometry.scale);
+            }
+            else if (geometry.name == "satellite")
+            {
+                model = glm::translate(model, geometry.position);
+
+                if (rotateX && i == idSelect)
                     model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
                 else if (rotateY && i == idSelect)
                     model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
