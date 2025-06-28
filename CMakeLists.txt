@@ -40,6 +40,7 @@ set(EXERCISES
     SuzannePhong
     SuzanneCamera
     UniverseCurves
+    FinalProject
 )
 
 add_compile_options(-Wno-pragmas)
@@ -68,7 +69,7 @@ foreach(EXERCISE ${EXERCISES})
         list(APPEND SOURCES module2/vivencial/LoadSimpleOBJ.cpp)
     endif()
 
-    if(EXERCISE STREQUAL "SuzanneCamera" OR EXERCISE STREQUAL "UniverseCurves")
+    if(EXERCISE STREQUAL "SuzanneCamera" OR EXERCISE STREQUAL "UniverseCurves" OR EXERCISE STREQUAL "FinalProject")
         list(APPEND SOURCES include/Camera/camera.cpp)
     endif()
     
