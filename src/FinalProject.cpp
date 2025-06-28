@@ -31,6 +31,10 @@ using namespace std;
 #include "Camera/camera.h"
 #include "Bezier/bezier.h"
 
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
+
+
 struct Light {
     glm::vec3 ka;
     glm::vec3 kd;
@@ -90,6 +94,7 @@ glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
 Camera camera(glm::vec3(0.0f, 0.0f, 10.0f),
               glm::vec3(0.0f, 1.0f, 0.0f),
               -90.0f, 0.0f);
+
 
 float deltaTime = 0.0f; // tempo entre frames
 float lastFrame = 0.0f;
@@ -167,15 +172,28 @@ void generateControlPointsSet(Geometry& geometry)
 
         geometry.movementSpeed = 0.3f;
     }
-
 }
 
+json loadConfig(const std::string& filepath) {
+    std::ifstream file(filepath);
+    if (!file) {
+        std::cerr << "Erro ao abrir o arquivo de configuração: " << filepath << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    json config;
+    file >> config;
+    return config;
+}
 
 // Função MAIN
 int main()
 {
 	// Inicialização da GLFW
 	glfwInit();
+
+    json config = loadConfig("../finalProject/config/project-config.json");
+
+    std::cout << "Conteúdo do arquivo JSON carregado:\n" << config["objects"][0]["objFile"] << std::endl;
 
 	// Criação da janela GLFW
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Universe - Parametric Curves", nullptr, nullptr);
@@ -208,33 +226,47 @@ int main()
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
-
-
+    
 	Shader shader("../finalProject/shaders/vertex-shader.glsl", "../finalProject/shaders/fragment-shader.glsl");
     
-    Geometry earth = setupGeometry("../assets/Modelos3D/Earth/earth.obj");
-    earth.name = "earth";
+    Geometry earth = setupGeometry(config["objects"][0]["objFile"].get<string>().c_str());
+    earth.name = config["objects"][0]["name"];
     generateControlPointsSet(earth);
     earth.position = earth.trajectoryPoints[0];
-    earth.scale = glm::vec3(0.1f, 0.1f, 0.1f);
+    earth.scale = glm::vec3(
+        config["objects"][0]["scale"][0],
+        config["objects"][0]["scale"][1],
+        config["objects"][0]["scale"][2]
+    );
 
-    Geometry moon = setupGeometry("../assets/Modelos3D/Moon/moon.obj");
-    moon.name = "moon";
+    Geometry moon = setupGeometry(config["objects"][1]["objFile"].get<string>().c_str());
+    moon.name = config["objects"][1]["name"];
     generateControlPointsSet(moon);
     moon.position = moon.trajectoryPoints[0];
-    moon.scale = glm::vec3(0.1f, 0.1f, 0.1f);
+    moon.scale = glm::vec3(
+        config["objects"][1]["scale"][0],
+        config["objects"][1]["scale"][1],
+        config["objects"][1]["scale"][2]
+    );
 
-    Geometry satellite = setupGeometry("../assets/Modelos3D/Satellite/satellite.obj");
-    std::cout << "Asteroid vertex count: " << satellite.vertexCount << std::endl;
-    satellite.name = "satellite";
+    Geometry sun = setupGeometry(config["objects"][2]["objFile"].get<string>().c_str());
+    sun.name = config["objects"][2]["name"];
+    sun.position = glm::vec3(0.0, 0.0, 0.0);
+    sun.scale = glm::vec3(
+        config["objects"][2]["scale"][0],
+        config["objects"][2]["scale"][1],
+        config["objects"][2]["scale"][2]
+    );
+
+    Geometry satellite = setupGeometry(config["objects"][3]["objFile"].get<string>().c_str());
+    satellite.name = config["objects"][3]["name"];
     generateControlPointsSet(satellite);
     satellite.position = satellite.trajectoryPoints[0];
-    satellite.scale = glm::vec3(0.1f, 0.1f, 0.1f);
-
-    Geometry sun = setupGeometry("../assets/Modelos3D/Sun/sun.obj");
-    sun.name = "sun";
-    sun.position = glm::vec3(0.0, 0.0, 0.0);
-    sun.scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    satellite.scale = glm::vec3(
+        config["objects"][3]["scale"][0],
+        config["objects"][3]["scale"][1],
+        config["objects"][3]["scale"][2]
+    );
 
     sceneObjects = {earth, moon, sun, satellite};
 	glUseProgram(shader.ID);
@@ -249,7 +281,15 @@ int main()
     glm::mat4 view = camera.GetViewMatrix();
     shader.setMat4("view", glm::value_ptr(view));
 
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)width / height, 0.1f, 100.0f);
+    camera.Fov = config["camera"]["fov"];
+    camera.Yaw = config["camera"]["yaw"];
+    camera.Pitch = config["camera"]["pitch"];
+    float near = config["camera"]["frustum"]["near"];
+    float far = config["camera"]["frustum"]["far"];
+    
+    glm::mat4 projection = glm::perspective(glm::radians(camera.Fov), (float)width / height, near, far);
+   
+    
     shader.setMat4("projection", glm::value_ptr(projection));
 
 
@@ -399,6 +439,7 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, geometry.vertexCount);
         }
 
+        updateCameraPos(window);
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);

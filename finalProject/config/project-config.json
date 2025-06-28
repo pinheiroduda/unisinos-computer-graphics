@@ -1,0 +1,55 @@
+{
+  "camera": {
+    "position": [0.0, 0.0, 0.0],
+    "up": [0.0, 1.0, 0.0],
+    "yaw": -90.0,
+    "pitch": 0.0,
+    "fov": 45.0,
+    "frustum": {
+      "near": 0.1,
+      "far": 100.0
+    }
+  },
+  "light": {
+    "color": [1.0, 1.0, 1.0]
+  },
+  "background": {
+    "texture": "../assets/Background/blue-universe-bg.jpg"
+  },
+  "objects": [
+    {
+      "name": "earth",
+      "objFile": "../assets/Modelos3D/Earth/earth.obj",
+      "scale": [0.1, 0.1, 0.1],
+      "trajectory": {
+        "type": "circle",
+        "radius": 3.0,
+        "speed": 0.2,
+        "points": 50
+      }
+    },
+    {
+      "name": "moon",
+      "objFile": "../assets/Modelos3D/Moon/moon.obj",
+      "scale": [0.1, 0.1, 0.1],
+      "trajectory": {
+        "type": "circle",
+        "radius": 0.8,
+        "speed": 0.5,
+        "points": 50,
+        "relativeTo": "earth"
+      }
+    },
+    {
+      "name": "sun",
+      "objFile": "../assets/Modelos3D/Sun/sun.obj",
+      "scale": [1.0, 1.0, 1.0],
+      "position": [0.0, 0.0, 0.0]
+    },
+    {
+      "name": "satellite",
+      "objFile": "../assets/Modelos3D/Satellite/satellite.obj",
+      "scale": [0.1, 0.1, 0.1]
+    }
+  ]
+}
