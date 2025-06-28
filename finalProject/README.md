@@ -1,5 +1,6 @@
 # Projeto de Computação Gráfica
 
+![Resultado do desafio](./final-project-eduarda_pinheiro.gif)
 
 ## Instruções para rodar o executável
 
@@ -21,6 +22,10 @@ A: mover para a esquerda
 D: mover para a direita
 
 Setas do mouse: olhar em volta (girar a câmera)
+
+## Selação dos objetos na sena
+
+Teclas de direção para <- esquerda ou para direita ->
 
 
 ## Rotação:
