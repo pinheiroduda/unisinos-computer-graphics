@@ -23,7 +23,7 @@ D: mover para a direita
 
 Setas do mouse: olhar em volta (girar a câmera)
 
-## Selação dos objetos na sena
+## Seleção dos objetos na cena
 
 Teclas de direção para <- esquerda ou para direita ->
 
